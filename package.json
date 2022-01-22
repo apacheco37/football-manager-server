@@ -6,13 +6,17 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "tsc",
-    "start": "ts-node src/app.ts",
+    "lint": "eslint .",
+    "start": "npm run lint && ts-node src/app.ts",
     "start:prod": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "apacheco37",
   "license": "ISC",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "@typescript-eslint/parser": "^5.10.0",
+    "eslint": "^8.7.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
   }
