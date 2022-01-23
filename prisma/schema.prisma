@@ -28,7 +28,7 @@ model Player {
 
 model Team {
   id      String   @id @default(uuid())
-  name    String
+  name    String   @unique
   players Player[]
 
   @@map("teams")

@@ -11,10 +11,16 @@
     "start:prod": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate": "prisma migrate dev -- --name",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset",
+    "db:studio": "prisma studio"
   },
   "author": "apacheco37",
   "license": "ISC",
+  "prisma": {
+    "seed": "ts-node prisma/seeds/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^3.8.1",
     "apollo-server-core": "^3.6.2",
