@@ -1,18 +1,13 @@
 import { ApolloServer } from 'apollo-server-express';
-import { ApolloServerPluginDrainHttpServer, gql } from 'apollo-server-core';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import express from 'express';
 import http from 'http';
+import { PrismaClient } from '@prisma/client';
 
-const typeDefs = gql`
-  type Query {
-    test: [String!]!
-  }
-`;
+import { schema } from './schema';
 
-const resolvers = {
-  Query: {
-    test: () => ['test'],
-  },
+export type Context = {
+  prisma: PrismaClient,
 };
 
 export async function startApolloServer() {
@@ -22,8 +17,10 @@ export async function startApolloServer() {
   const port = process.env.PORT || 3000;
 
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
+    context: {
+      prisma: new PrismaClient(),
+    },
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 
