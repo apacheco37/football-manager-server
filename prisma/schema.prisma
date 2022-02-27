@@ -30,6 +30,18 @@ model Team {
   id      String   @id @default(uuid())
   name    String   @unique
   players Player[]
+  User    User     @relation(fields: [userID], references: [id])
+  userID  String   @unique
 
   @@map("teams")
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  username String @unique
+  password String
+  team     Team?
+
+  @@map("users")
 }

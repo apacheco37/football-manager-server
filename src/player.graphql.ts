@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-core";
+import { gql, AuthenticationError } from "apollo-server-core";
 import { Context } from "./apolloServer";
 
 const typeDefs = gql`
@@ -26,11 +26,19 @@ const resolvers = {
       _parent: never,
       args: { id: string },
       context: Context
-    ) => context.prisma.player.findUnique({
-      where: {
-        id: args.id,
-      },
-    }),
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError(
+          'User is not authenticated.'
+        );
+      }
+
+      return context.prisma.player.findUnique({
+        where: {
+          id: args.id,
+        },
+      });
+    },
   },
 };
 

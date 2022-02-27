@@ -3,11 +3,32 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  const user1 = await prisma.user.upsert({
+    where: { username: 'testuser' },
+    update: {},
+    create: {
+      username: 'testuser',
+      password: 'testpassword',
+      email: 'a@a.com'
+    }
+  });
+
+  const user2 = await prisma.user.upsert({
+    where: { username: 'testuser2' },
+    update: {},
+    create: {
+      username: 'testuser2',
+      password: 'testpassword2',
+      email: 'a2@a.com'
+    }
+  });
+
   const team1 = await prisma.team.upsert({
     where: { name: 'Hellriders' },
     update: {},
     create: {
-      name: 'Hellriders'
+      name: 'Hellriders',
+      userID: user1.id
     },
   });
 
@@ -15,7 +36,8 @@ async function main() {
     where: { name: 'Imperium' },
     update: {},
     create: {
-      name: 'Imperium'
+      name: 'Imperium',
+      userID: user2.id
     },
   });
 
