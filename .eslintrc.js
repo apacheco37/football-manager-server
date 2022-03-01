@@ -8,6 +8,7 @@ module.exports = {
   env: {
     node: true,
   },
+  ignorePatterns: ['dist'],
   rules: {
     "semi": ["error", "always"],
   }

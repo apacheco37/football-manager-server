@@ -8,6 +8,7 @@
     "build": "tsc",
     "lint": "eslint .",
     "start": "npm run lint && ts-node src/app.ts",
+    "start:debug": "node --inspect -r ts-node/register src/app.ts",
     "start:prod": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:migrate": "prisma migrate dev -- --name",
@@ -25,10 +26,16 @@
     "@prisma/client": "^3.8.1",
     "apollo-server-core": "^3.6.2",
     "apollo-server-express": "^3.6.2",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
     "express": "^4.17.2",
-    "graphql": "^16.2.0"
+    "graphql": "^16.2.0",
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/jsonwebtoken": "^8.5.8",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
     "eslint": "^8.7.0",
