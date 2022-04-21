@@ -1,5 +1,5 @@
 import { PrismaClient, User } from "@prisma/client";
-import { Response } from 'express';
+import { Response } from "express";
 import { AuthService } from "../auth/auth.service";
 
 import { PlayerService } from "../player/player.service";
@@ -14,11 +14,7 @@ export class ContextServices {
   private _playerService: PlayerService | undefined;
   private _teamService: TeamService | undefined;
 
-  constructor(
-    prismaClient: PrismaClient,
-    user: User | null,
-    res: Response,
-  ) {
+  constructor(prismaClient: PrismaClient, user: User | null, res: Response) {
     this.prismaClient = prismaClient;
     this.user = user;
     this.res = res;

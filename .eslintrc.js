@@ -1,15 +1,15 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
+  parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
+    ecmaVersion: "latest",
+    sourceType: "module",
   },
-  extends: ['plugin:@typescript-eslint/recommended'], // Uses the linting rules from @typescript-eslint/eslint-plugin
+  extends: ["plugin:@typescript-eslint/recommended", "prettier"], // Uses the linting rules from @typescript-eslint/eslint-plugin
   env: {
     node: true,
   },
-  ignorePatterns: ['dist'],
+  ignorePatterns: ["dist"],
   rules: {
-    "semi": ["error", "always"],
-  }
+    semi: ["error", "always"],
+  },
 };

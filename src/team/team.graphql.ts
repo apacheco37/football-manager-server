@@ -15,11 +15,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    team: (
-      _parent: never,
-      { id }: { id: string },
-      { services }: Context
-    ) => {
+    team: (_parent: never, { id }: { id: string }, { services }: Context) => {
       return services.teamService.getTeam(id);
     },
   },

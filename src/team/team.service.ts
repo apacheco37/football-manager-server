@@ -5,9 +5,7 @@ import { BaseService } from "../core/baseService";
 export class TeamService extends BaseService {
   async getTeam(id: string) {
     if (!this.user) {
-      throw new AuthenticationError(
-        'User is not authenticated.'
-      );
+      throw new AuthenticationError("User is not authenticated.");
     }
 
     return this.prismaClient.team.findUnique({
@@ -16,5 +14,4 @@ export class TeamService extends BaseService {
       },
     });
   }
-
 }

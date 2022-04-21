@@ -8,15 +8,18 @@ export class AuthService extends BaseService {
     const user = await this.prismaClient.user.findUnique({
       where: {
         username,
-      }
+      },
     });
     if (user) {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
-        const token = jwt.sign({ userID: user.id }, process.env.JWT_SECRET || "TODO");
-        this.res.cookie('Authentication', token, {
+        const token = jwt.sign(
+          { userID: user.id },
+          process.env.JWT_SECRET || "TODO"
+        );
+        this.res.cookie("Authentication", token, {
           secure: true,
-          sameSite: 'none',
+          sameSite: "none",
         });
         return user;
       }
@@ -30,8 +33,8 @@ export class AuthService extends BaseService {
       data: {
         email,
         username,
-        password: hashedPassword
-      }
+        password: hashedPassword,
+      },
     });
     return user;
   }

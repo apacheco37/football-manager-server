@@ -24,15 +24,12 @@ const resolvers = {
     login: async (
       _parent: never,
       {
-        input: {
-          username,
-          password,
-        }
+        input: { username, password },
       }: {
         input: {
-          username: string,
-          password: string,
-        }
+          username: string;
+          password: string;
+        };
       },
       { services }: Context
     ) => {
@@ -41,25 +38,17 @@ const resolvers = {
     signup: async (
       _parent: never,
       {
-        input: {
-          username,
-          password,
-          email,
-        }
+        input: { username, password, email },
       }: {
         input: {
-          username: string,
-          password: string,
-          email: string,
-        }
+          username: string;
+          password: string;
+          email: string;
+        };
       },
       { services }: Context
     ) => {
-      return services.authService.signup(
-        username,
-        email,
-        password
-      );
+      return services.authService.signup(username, email, password);
     },
   },
 };

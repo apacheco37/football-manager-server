@@ -22,11 +22,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    player: (
-      _parent: never,
-      { id }: { id: string },
-      { services }: Context
-    ) => {
+    player: (_parent: never, { id }: { id: string }, { services }: Context) => {
       return services.playerService.getPlayer(id);
     },
   },
