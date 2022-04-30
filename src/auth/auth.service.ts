@@ -9,6 +9,9 @@ export class AuthService extends BaseService {
       where: {
         username,
       },
+      include: {
+        team: true,
+      },
     });
     if (user) {
       const passwordMatch = await bcrypt.compare(password, user.password);
@@ -34,6 +37,18 @@ export class AuthService extends BaseService {
         email,
         username,
         password: hashedPassword,
+      },
+    });
+    return user;
+  }
+
+  async verify() {
+    const user = await this.prismaClient.user.findUnique({
+      where: {
+        id: this.user?.id,
+      },
+      include: {
+        team: true,
       },
     });
     return user;

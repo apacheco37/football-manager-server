@@ -13,6 +13,10 @@ const typeDefs = gql`
     email: String!
   }
 
+  extend type Query {
+    verify: User
+  }
+
   extend type Mutation {
     login(input: LoginInput!): User
     signup(input: SignupInput!): User!
@@ -20,8 +24,13 @@ const typeDefs = gql`
 `;
 
 const resolvers = {
+  Query: {
+    verify: (_parent: never, _: never, { services }: Context) => {
+      return services.authService.verify();
+    },
+  },
   Mutation: {
-    login: async (
+    login: (
       _parent: never,
       {
         input: { username, password },
@@ -35,7 +44,7 @@ const resolvers = {
     ) => {
       return services.authService.login(username, password);
     },
-    signup: async (
+    signup: (
       _parent: never,
       {
         input: { username, password, email },
