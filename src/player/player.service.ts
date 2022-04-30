@@ -14,4 +14,16 @@ export class PlayerService extends BaseService {
       },
     });
   }
+
+  async getPlayersByTeam(teamID: string) {
+    if (!this.user) {
+      throw new AuthenticationError("User is not authenticated.");
+    }
+
+    return await this.prismaClient.player.findMany({
+      where: {
+        teamID,
+      },
+    });
+  }
 }
