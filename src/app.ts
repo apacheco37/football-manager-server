@@ -9,7 +9,7 @@ async function start() {
   const app = express();
   app.use(cookieParser());
   const httpServer = http.createServer(app);
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3001;
 
   const server = await newApolloServer(httpServer);
   await server.start();
