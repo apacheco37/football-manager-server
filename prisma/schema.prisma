@@ -23,6 +23,8 @@ model Player {
   team       Team?   @relation(fields: [teamID], references: [id])
   teamID     String?
 
+  playerOnLineup PlayerOnLineup[]
+  matchEvents    MatchEvent[]
   @@map("players")
 }
 
@@ -33,6 +35,8 @@ model Team {
   User    User     @relation(fields: [userID], references: [id])
   userID  String   @unique
 
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
   @@map("teams")
 }
 
@@ -44,4 +48,83 @@ model User {
   team     Team?
 
   @@map("users")
+}
+
+model Match {
+  id String @id @default(uuid())
+
+  homeTeam   Team   @relation("HomeTeam", fields: [homeTeamID], references: [id])
+  homeTeamID String @map("home_team_id")
+  awayTeam   Team   @relation("AwayTeam", fields: [awayTeamID], references: [id])
+  awayTeamID String @map("away_team_id")
+
+  events MatchEvent[]
+
+  homeRatings   MatchRatings @relation("HomeRatings", fields: [homeRatingsID], references: [id])
+  homeRatingsID Int          @unique @map("home_ratings_id")
+  awayRatings   MatchRatings @relation("AwayRatings", fields: [awayRatingsID], references: [id])
+  awayRatingsID Int          @unique @map("away_ratings_id")
+
+  lineupPlayers PlayerOnLineup[]
+
+  @@map("matches")
+}
+
+model MatchRatings {
+  id          Int   @id @default(autoincrement())
+  attack      Float
+  midfield    Float
+  defense     Float
+  goalkeeping Float
+
+  homeMatch Match? @relation("HomeRatings")
+  awayMatch Match? @relation("AwayRatings")
+
+  @@map("match_ratings")
+}
+
+model MatchEvent {
+  id     String         @id @default(uuid())
+  minute Int
+  type   MatchEventType
+  team   MatchTeam
+
+  players Player[]
+
+  match   Match  @relation(fields: [matchID], references: [id])
+  matchID String @map("match_id")
+
+  @@map("match_events")
+}
+
+enum MatchTeam {
+  HOME
+  AWAY
+}
+
+enum MatchEventType {
+  GOAL
+  CARD
+  SUBSTITUTION
+  INJURY
+}
+
+model PlayerOnLineup {
+  id         Int       @id() @default(autoincrement())
+  position   Position
+  lineupTeam MatchTeam
+
+  player   Player @relation(fields: [playerID], references: [id])
+  playerID String @map("player_id")
+  match    Match  @relation(fields: [matchID], references: [id])
+  matchID  String @map("match_id")
+
+  @@map("players_on_lineups")
+}
+
+enum Position {
+  ATTACKER
+  MIDFIELDER
+  DEFENDER
+  GOALKEEPER
 }

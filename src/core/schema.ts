@@ -17,6 +17,10 @@ import {
   typeDefs as userTypeDefs,
   resolvers as userResolvers,
 } from "../user/user.graphql";
+import {
+  typeDefs as matchTypeDefs,
+  resolvers as matchResolvers,
+} from "../match/match.graphql";
 
 // Define base Query/Mutation types to be extended
 const typeDefs = gql`
@@ -35,6 +39,13 @@ export const schema = makeExecutableSchema({
     playerTypeDefs,
     authTypeDefs,
     userTypeDefs,
+    matchTypeDefs,
   ],
-  resolvers: [teamResolvers, playerResolvers, authResolvers, userResolvers],
+  resolvers: [
+    teamResolvers,
+    playerResolvers,
+    authResolvers,
+    userResolvers,
+    matchResolvers,
+  ],
 });
