@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcryptjs";
 
+import { randomPlayer } from "../../src/player/player.utils";
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -44,57 +46,17 @@ async function main() {
     },
   });
 
-  console.log({ team1, team2 });
+  const players = [];
+  for (let i = 0; i < 11; i++) {
+    players.push(randomPlayer(team1.id));
+  }
+  for (let i = 0; i < 11; i++) {
+    players.push(randomPlayer(team2.id));
+  }
 
-  const players = await prisma.player.createMany({
-    data: [
-      {
-        firstName: "John",
-        lastName: "Doe",
-        age: 20,
-        talent: 3,
-        attacker: 15,
-        midfielder: 10,
-        defender: 7,
-        goalkeeper: 2,
-        teamID: team1.id,
-      },
-      {
-        firstName: "Marc",
-        lastName: "Wasser",
-        age: 29,
-        talent: 4,
-        attacker: 3,
-        midfielder: 10,
-        defender: 7,
-        goalkeeper: 2,
-        teamID: team1.id,
-      },
-      {
-        firstName: "Paul",
-        lastName: "Stanley",
-        age: 24,
-        talent: 5,
-        attacker: 4,
-        midfielder: 9,
-        defender: 10,
-        goalkeeper: 3,
-        teamID: team2.id,
-      },
-      {
-        firstName: "Charles",
-        lastName: "Marden",
-        age: 17,
-        talent: 7,
-        attacker: 5,
-        midfielder: 8,
-        defender: 7,
-        goalkeeper: 1,
-      },
-    ],
+  await prisma.player.createMany({
+    data: players,
   });
-
-  console.log({ players });
 }
 
 main()
