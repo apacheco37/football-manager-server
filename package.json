@@ -25,6 +25,7 @@
     "seed": "ts-node prisma/seeds/seed.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.1.0",
     "@prisma/client": "^3.8.1",
     "apollo-server-core": "^3.6.2",
     "apollo-server-express": "^3.6.2",
