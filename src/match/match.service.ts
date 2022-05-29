@@ -1,7 +1,7 @@
-import { MatchTeam, Prisma } from "@prisma/client";
 import { BaseService } from "../core/baseService";
-import MatchSimulation, { SimulatedMatch } from "./match-simulation";
+import MatchSimulation from "./match-simulation";
 import { PlayerOnLineupInput, PlayMatchInput } from "./match.graphql";
+import { buildMatchCreateInput } from "./match.utils";
 
 export class MatchService extends BaseService {
   async playMatch(input: PlayMatchInput) {
@@ -23,7 +23,7 @@ export class MatchService extends BaseService {
     }).simulateMatch();
 
     const match = await this.prismaClient.match.create({
-      data: this._buildMatchCreateInput(simulatedMatch),
+      data: buildMatchCreateInput(simulatedMatch),
       include: {
         homeTeam: true,
         awayTeam: true,
@@ -148,50 +148,5 @@ export class MatchService extends BaseService {
     });
 
     return { homeLineup, awayLineup };
-  }
-
-  private _buildMatchCreateInput(
-    simulatedMatch: SimulatedMatch
-  ): Prisma.MatchCreateInput {
-    const lineupPlayers = [
-      ...simulatedMatch.homeLineup.map((player) => {
-        return {
-          position: player.position,
-          playerID: player.player.id,
-          lineupTeam: MatchTeam.HOME,
-        };
-      }),
-      ...simulatedMatch.awayLineup.map((player) => {
-        return {
-          position: player.position,
-          playerID: player.player.id,
-          lineupTeam: MatchTeam.AWAY,
-        };
-      }),
-    ];
-
-    const events = simulatedMatch.events.map((event) => {
-      return {
-        minute: event.minute,
-        type: event.type,
-        team: event.team,
-        players: {
-          connect: event.players.map((player) => {
-            return { id: player.id };
-          }),
-        },
-      };
-    });
-
-    return {
-      homeTeam: { connect: { id: simulatedMatch.homeTeam.id } },
-      awayTeam: { connect: { id: simulatedMatch.awayTeam.id } },
-      events: {
-        create: events,
-      },
-      homeRatings: { create: simulatedMatch.homeRatings },
-      awayRatings: { create: simulatedMatch.awayRatings },
-      lineupPlayers: { createMany: { data: lineupPlayers } },
-    };
   }
 }

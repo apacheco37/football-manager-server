@@ -2,8 +2,9 @@ import { faker } from "@faker-js/faker";
 
 import { getRandomIntInRange } from "../utils/getRandomIntInRange";
 
-export function randomPlayer(teamID?: string) {
+export function randomPlayer(teamID?: string, withID = false) {
   const player = {
+    id: withID ? faker.datatype.uuid() : undefined,
     firstName: faker.name.firstName("male"),
     lastName: faker.name.lastName("male"),
     age: getRandomIntInRange(18, 35),
