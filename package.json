@@ -8,7 +8,7 @@
     "build": "npm run db:generate && tsc",
     "start": "npm run lint && ts-node src/app.ts",
     "start:debug": "node --inspect -r ts-node/register src/app.ts",
-    "start:prod": "node dist/app.js",
+    "start:prod": "node dist/src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
     "prettier:fix": "prettier --write .",
