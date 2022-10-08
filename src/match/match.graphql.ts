@@ -1,5 +1,7 @@
 import { gql } from "apollo-server-core";
+
 import { Context } from "../core/apolloServer";
+import { GetMatch } from "./match.service";
 
 const typeDefs = gql`
   type Match {
@@ -10,6 +12,14 @@ const typeDefs = gql`
     homeRatings: MatchRatings!
     awayRatings: MatchRatings!
     lineupPlayers: [PlayerOnLineup!]!
+    summary: MatchSummary!
+  }
+
+  type MatchSummary {
+    homeGoals: Int!
+    awayGoals: Int!
+    homeCards: Int!
+    awayCards: Int!
   }
 
   type MatchEvent {
@@ -93,6 +103,13 @@ export interface PlayMatchInput {
   awayLineup: PlayerOnLineupInput[];
 }
 
+export interface MatchSummary {
+  homeGoals: number;
+  awayGoals: number;
+  homeCards: number;
+  awayCards: number;
+}
+
 const resolvers = {
   Query: {
     match: (_parent: never, { id }: { id: string }, { services }: Context) => {
@@ -102,14 +119,15 @@ const resolvers = {
   Mutation: {
     playMatch: (
       _parent: never,
-      {
-        input,
-      }: {
-        input: PlayMatchInput;
-      },
+      { input }: { input: PlayMatchInput },
       { services }: Context
     ) => {
       return services.matchService.playMatch(input);
+    },
+  },
+  Match: {
+    summary: (match: GetMatch, _: never, { services }: Context) => {
+      return services.matchService.getMatchSummary(match);
     },
   },
 };

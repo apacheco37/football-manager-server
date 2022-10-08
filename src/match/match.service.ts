@@ -1,9 +1,79 @@
+import { MatchEventType, MatchTeam, Prisma } from "@prisma/client";
+
 import { BaseService } from "../core/baseService";
 import MatchSimulation from "./match-simulation";
-import { PlayerOnLineupInput, PlayMatchInput } from "./match.graphql";
+import {
+  MatchSummary,
+  PlayerOnLineupInput,
+  PlayMatchInput,
+} from "./match.graphql";
 import { buildMatchCreateInput } from "./match.utils";
 
+export type GetMatch = Prisma.MatchGetPayload<{
+  include: typeof getMatchInclude;
+}>;
+
+const getMatchInclude = {
+  homeTeam: true,
+  awayTeam: true,
+  events: {
+    include: {
+      players: true,
+    },
+  },
+  homeRatings: true,
+  awayRatings: true,
+  lineupPlayers: {
+    include: {
+      player: true,
+    },
+  },
+};
+
 export class MatchService extends BaseService {
+  async getMatch(id: string): Promise<GetMatch | null> {
+    const match = await this.prismaClient.match.findUnique({
+      where: {
+        id,
+      },
+      include: getMatchInclude,
+    });
+    return match;
+  }
+
+  getMatchSummary(match: GetMatch): MatchSummary {
+    const homeGoals = match.events.reduce(
+      (goals, event) =>
+        event.type === MatchEventType.GOAL && event.team === MatchTeam.HOME
+          ? goals + 1
+          : goals,
+      0
+    );
+    const awayGoals = match.events.reduce(
+      (goals, event) =>
+        event.type === MatchEventType.GOAL && event.team === MatchTeam.AWAY
+          ? goals + 1
+          : goals,
+      0
+    );
+    const homeCards = match.events.reduce(
+      (goals, event) =>
+        event.type === MatchEventType.CARD && event.team === MatchTeam.HOME
+          ? goals + 1
+          : goals,
+      0
+    );
+    const awayCards = match.events.reduce(
+      (goals, event) =>
+        event.type === MatchEventType.CARD && event.team === MatchTeam.AWAY
+          ? goals + 1
+          : goals,
+      0
+    );
+
+    return { homeGoals, awayGoals, homeCards, awayCards };
+  }
+
   async playMatch(input: PlayMatchInput) {
     const { homeTeam, awayTeam } = await this._getMatchTeams(
       input.homeTeamID,
@@ -24,31 +94,6 @@ export class MatchService extends BaseService {
 
     const match = await this.prismaClient.match.create({
       data: buildMatchCreateInput(simulatedMatch),
-      include: {
-        homeTeam: true,
-        awayTeam: true,
-        events: {
-          include: {
-            players: true,
-          },
-        },
-        homeRatings: true,
-        awayRatings: true,
-        lineupPlayers: {
-          include: {
-            player: true,
-          },
-        },
-      },
-    });
-    return match;
-  }
-
-  async getMatch(id: string) {
-    const match = await this.prismaClient.match.findUnique({
-      where: {
-        id,
-      },
       include: {
         homeTeam: true,
         awayTeam: true,
