@@ -1,12 +1,8 @@
-import { MatchEventType, MatchTeam, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 import { BaseService } from "../core/baseService";
 import MatchSimulation from "./match-simulation";
-import {
-  MatchSummary,
-  PlayerOnLineupInput,
-  PlayMatchInput,
-} from "./match.graphql";
+import { PlayerOnLineupInput, PlayMatchInput } from "./match.graphql";
 import { buildMatchCreateInput } from "./match.utils";
 
 export type GetMatch = Prisma.MatchGetPayload<{
@@ -39,39 +35,6 @@ export class MatchService extends BaseService {
       include: getMatchInclude,
     });
     return match;
-  }
-
-  getMatchSummary(match: GetMatch): MatchSummary {
-    const homeGoals = match.events.reduce(
-      (goals, event) =>
-        event.type === MatchEventType.GOAL && event.team === MatchTeam.HOME
-          ? goals + 1
-          : goals,
-      0
-    );
-    const awayGoals = match.events.reduce(
-      (goals, event) =>
-        event.type === MatchEventType.GOAL && event.team === MatchTeam.AWAY
-          ? goals + 1
-          : goals,
-      0
-    );
-    const homeCards = match.events.reduce(
-      (goals, event) =>
-        event.type === MatchEventType.CARD && event.team === MatchTeam.HOME
-          ? goals + 1
-          : goals,
-      0
-    );
-    const awayCards = match.events.reduce(
-      (goals, event) =>
-        event.type === MatchEventType.CARD && event.team === MatchTeam.AWAY
-          ? goals + 1
-          : goals,
-      0
-    );
-
-    return { homeGoals, awayGoals, homeCards, awayCards };
   }
 
   async playMatch(input: PlayMatchInput) {

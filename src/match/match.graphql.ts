@@ -2,6 +2,7 @@ import { gql } from "apollo-server-core";
 
 import { Context } from "../core/apolloServer";
 import { GetMatch } from "./match.service";
+import { getMatchSummary } from "./match.utils";
 
 const typeDefs = gql`
   type Match {
@@ -126,8 +127,8 @@ const resolvers = {
     },
   },
   Match: {
-    summary: (match: GetMatch, _: never, { services }: Context) => {
-      return services.matchService.getMatchSummary(match);
+    summary: ({ events }: GetMatch) => {
+      return getMatchSummary(events);
     },
   },
 };
