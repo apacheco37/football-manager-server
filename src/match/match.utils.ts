@@ -79,3 +79,10 @@ export function getMatchSummary(events: GetMatch["events"]): MatchSummary {
 
   return { homeGoals, awayGoals, homeCards, awayCards };
 }
+
+export function getLineupByTeam(
+  players: GetMatch["lineupPlayers"],
+  team: MatchTeam
+) {
+  return players.filter((player) => player.lineupTeam === team);
+}

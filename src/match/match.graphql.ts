@@ -1,18 +1,20 @@
+import { MatchTeam } from "@prisma/client";
 import { gql } from "apollo-server-core";
 
 import { Context } from "../core/apolloServer";
 import { GetMatch } from "./match.service";
-import { getMatchSummary } from "./match.utils";
+import { getLineupByTeam, getMatchSummary } from "./match.utils";
 
 const typeDefs = gql`
   type Match {
     id: ID!
     homeTeam: Team!
     awayTeam: Team!
-    events: [MatchEvent!]!
     homeRatings: MatchRatings!
     awayRatings: MatchRatings!
-    lineupPlayers: [PlayerOnLineup!]!
+    homeLineup: [PlayerOnLineup!]!
+    awayLineup: [PlayerOnLineup!]!
+    events: [MatchEvent!]!
     summary: MatchSummary!
   }
 
@@ -54,7 +56,6 @@ const typeDefs = gql`
   type PlayerOnLineup {
     position: Position!
     player: Player!
-    lineupTeam: MatchTeam!
   }
 
   enum Position {
@@ -127,9 +128,11 @@ const resolvers = {
     },
   },
   Match: {
-    summary: ({ events }: GetMatch) => {
-      return getMatchSummary(events);
-    },
+    homeLineup: ({ lineupPlayers }: GetMatch) =>
+      getLineupByTeam(lineupPlayers, MatchTeam.HOME),
+    awayLineup: ({ lineupPlayers }: GetMatch) =>
+      getLineupByTeam(lineupPlayers, MatchTeam.AWAY),
+    summary: ({ events }: GetMatch) => getMatchSummary(events),
   },
 };
 
