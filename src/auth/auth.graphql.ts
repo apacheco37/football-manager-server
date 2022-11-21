@@ -19,6 +19,7 @@ const typeDefs = gql`
 
   extend type Mutation {
     login(input: LoginInput!): User
+    logout: Boolean
     signup(input: SignupInput!): User!
   }
 `;
@@ -44,6 +45,8 @@ const resolvers = {
     ) => {
       return services.authService.login(username, password);
     },
+    logout: (_parent: never, _: never, { services }: Context) =>
+      services.authService.logout(),
     signup: (
       _parent: never,
       {

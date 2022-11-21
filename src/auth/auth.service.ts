@@ -30,6 +30,10 @@ export class AuthService extends BaseService {
     return null;
   }
 
+  logout() {
+    return this.res.cookie("Authentication", "");
+  }
+
   async signup(username: string, email: string, password: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await this.prismaClient.user.create({
