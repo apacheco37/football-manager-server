@@ -33,8 +33,8 @@ model Team {
   id      String   @id @default(uuid())
   name    String   @unique
   players Player[]
-  User    User     @relation(fields: [userID], references: [id])
-  userID  String   @unique
+  User    User?    @relation(fields: [userID], references: [id])
+  userID  String?  @unique
 
   homeMatches Match[] @relation("HomeTeam")
   awayMatches Match[] @relation("AwayTeam")
