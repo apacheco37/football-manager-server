@@ -25,6 +25,7 @@ model Player {
 
   playerOnLineup PlayerOnLineup[]
   matchEvents    MatchEvent[]
+
   @@map("players")
 }
 
@@ -37,6 +38,11 @@ model Team {
 
   homeMatches Match[] @relation("HomeTeam")
   awayMatches Match[] @relation("AwayTeam")
+
+  currentSeasonID String   @map("current_season_id")
+  currentSeason   Season   @relation("CurrentSeason", fields: [currentSeasonID], references: [id])
+  pastSeasons     Season[] @relation("PastSeasons")
+
   @@map("teams")
 }
 
@@ -58,6 +64,22 @@ model Match {
   awayTeam   Team   @relation("AwayTeam", fields: [awayTeamID], references: [id])
   awayTeamID String @map("away_team_id")
 
+  lineupPlayers PlayerOnLineup[]
+
+  matchResult MatchResult?
+
+  season   Season @relation(fields: [seasonID], references: [id])
+  seasonID String @map("season_id")
+
+  @@map("matches")
+}
+
+model MatchResult {
+  id Int @id @default(autoincrement())
+
+  match   Match  @relation(fields: [matchID], references: [id])
+  matchID String @unique @map("match_id")
+
   events MatchEvent[]
 
   homeRatings   MatchRatings @relation("HomeRatings", fields: [homeRatingsID], references: [id])
@@ -65,9 +87,7 @@ model Match {
   awayRatings   MatchRatings @relation("AwayRatings", fields: [awayRatingsID], references: [id])
   awayRatingsID Int          @unique @map("away_ratings_id")
 
-  lineupPlayers PlayerOnLineup[]
-
-  @@map("matches")
+  @@map("match_results")
 }
 
 model MatchRatings {
@@ -77,8 +97,8 @@ model MatchRatings {
   defense     Float
   goalkeeping Float
 
-  homeMatch Match? @relation("HomeRatings")
-  awayMatch Match? @relation("AwayRatings")
+  homeMatch MatchResult? @relation("HomeRatings")
+  awayMatch MatchResult? @relation("AwayRatings")
 
   @@map("match_ratings")
 }
@@ -91,8 +111,8 @@ model MatchEvent {
 
   players Player[]
 
-  match   Match  @relation(fields: [matchID], references: [id])
-  matchID String @map("match_id")
+  matchResult   MatchResult @relation(fields: [matchResultID], references: [id])
+  matchResultID Int         @map("match_result_id")
 
   @@map("match_events")
 }
@@ -127,4 +147,32 @@ enum Position {
   MIDFIELDER
   DEFENDER
   GOALKEEPER
+}
+
+model League {
+  id   String @id @default(uuid())
+  name String @unique
+
+  parentLeagueID  String?  @map("parent_league_id")
+  parentLeague    League?  @relation("TeacherStudents", fields: [parentLeagueID], references: [id])
+  childrenLeagues League[] @relation("TeacherStudents")
+
+  seasons Season[]
+
+  @@map("leagues")
+}
+
+model Season {
+  id     String @id @default(uuid())
+  number Int
+
+  currentTeams Team[] @relation("CurrentSeason")
+  pastTeams    Team[] @relation("PastSeasons")
+
+  fixture Match[]
+
+  league   League @relation(fields: [leagueID], references: [id])
+  leagueID String @map("league_id")
+
+  @@map("seasons")
 }
